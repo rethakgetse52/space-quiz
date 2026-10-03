@@ -341,17 +341,29 @@
     }
     .results h1 { margin-bottom: 8px; }
     .results-copy { margin: 0 auto 21px; color: var(--muted); }
-    .final-score {
-      display: inline-flex;
-      align-items: baseline;
-      gap: 7px;
-      margin-bottom: 24px;
-      color: var(--purple);
-      font-size: 39px;
-      font-weight: 800;
-      letter-spacing: -.05em;
+    .result-recap {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 0 0 24px;
     }
-    .final-score span { color: var(--muted); font-size: 15px; font-weight: 600; letter-spacing: 0; }
+    .result-stat {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--purple-soft) 42%, var(--card));
+    }
+    .result-stat dt { color: var(--muted); font-size: 13px; font-weight: 650; }
+    .result-stat dd {
+      margin: 2px 0 0;
+      color: var(--purple);
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -.04em;
+      font-variant-numeric: tabular-nums;
+    }
+    .result-stat dd strong { font-weight: inherit; }
+    .result-stat dd span { color: var(--muted); font-size: 14px; font-weight: 600; letter-spacing: 0; }
     .results .primary { display: block; width: 100%; }
 
     .confetti {
@@ -436,7 +448,16 @@
         <p class="eyebrow">Mission complete</p>
         <h1 id="result-title">Out of this world!</h1>
         <p class="results-copy" id="result-copy"></p>
-        <div class="final-score"><strong id="final-score">0</strong><span>/ 10 correct</span></div>
+        <dl class="result-recap" aria-label="Answer recap">
+          <div class="result-stat">
+            <dt>Correct</dt>
+            <dd><strong id="final-score">0</strong><span> / 10</span></dd>
+          </div>
+          <div class="result-stat">
+            <dt>Incorrect</dt>
+            <dd><strong id="incorrect-score">10</strong><span> / 10</span></dd>
+          </div>
+        </dl>
         <button class="primary" id="restart" type="button">Play again ↻</button>
       </div>
     </section>
@@ -551,6 +572,7 @@
       quizView.hidden = true;
       resultsView.hidden = false;
       document.querySelector("#final-score").textContent = score;
+      document.querySelector("#incorrect-score").textContent = questions.length - score;
       const percent = score / questions.length;
       let emoji, title, copy;
       if (percent === 1) {
